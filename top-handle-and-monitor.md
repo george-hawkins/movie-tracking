@@ -12,7 +12,7 @@ Cheapest reasonable quality configuration:
 * [FeelWorld FW759 7" monitor](https://www.bhphotovideo.com/c/product/1234190-REG/feelworld_fw759_7_ips_1280_x.html) - it does not come with a battery.
 * [Battery and charger for monitor](https://www.bhphotovideo.com/c/product/1181937-REG/watson_np_f770_battery_pack_for.html) - charger works with 100-240VAC and comes with a US plug and an EU plug adapter.
 
-All links above are for B&H - you can also get the UURig handle and the FeelWorld monitor slightly cheaper on AliExpress (from their respective stores [here](https://www.aliexpress.com/item/33000498271.html) and [here](https://www.aliexpress.com/item/32901094485.html)).
+All links above are for B&H - you can also get the UURig handle and the FeelWorld monitor slightly cheaper on AliExpress (from their respective stores [here](https://www.aliexpress.com/item/33000498271.html) and [here](https://www.aliexpress.com/item/32901094485.html)). The B&H supplied version of the monitor comes with an external power adapter with a US plug - on AliExpress you can chose between an US or EU plug.
 
 The SmallRig equivalent of the UURig cold shoe top handle is the considerably more expensive [2094C](https://www.bhphotovideo.com/c/product/1653061-REG/smallrig_2094c_universal_top_handle_with.html) (at $50 vs $20 for the UURig handle).
 
@@ -20,7 +20,7 @@ More expensive cage-based configuration:
 
 * [SmallRig 1584 VersaFrame Cage (Medium)](https://www.bhphotovideo.com/c/product/1421833-REG/smallrig_1584_versaframe_cage.html) (check the dimensions against your camera first to confirm it will fit).
 * [SmallRig 2048B top handle with small NATO rail](https://www.bhphotovideo.com/c/product/1422088-REG/smallrig_2084_quick_release_nato_handle.html)
-* [SmallRig tilt-only monitor mount]([two-bolt mount](https://www.bhphotovideo.com/c/product/1582517-REG/smallrig_2904_swivel_and_tilt_adjustable.html)
+* [SmallRig tilt-only monitor mount](https://www.bhphotovideo.com/c/product/1582517-REG/smallrig_2904_swivel_and_tilt_adjustable.html)
 * The FW759 and battery/charger combo already linked to above.
 
 Note: this page just covers universal cages, SmallRig and others produce more compact cages for many current models. If you're OK with a cage that's tied to a specific camera model (it'll have a very good stable fit but little resale value if you switch camera) then you may be able to find one for your model e.g. [here](https://www.bhphotovideo.com/c/buy/Hand-Shoulder-Waist-Stabilizers/ci/3925) on B&H.
