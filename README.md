@@ -159,6 +159,8 @@ Open your movie in the _Movie Clip_ editor:
 
 ![img.png](images/movie-clip-editor.png)
 
+Note: if you ever move your `.blend` file or clip such that the Blender loses the relationship between the two, you need to locate the clip via the _File Path_ field in the left-hand _Footage_ tab rather than via the _Open Clip_ button above the movie clip (which will set up a completely new tracking scene rather than adding a clip into the current tracking scene).
+
 The default layout consists of one _3D Viewport_ (upper right) and three _Tracking_ editors, each in a different view mode - the top one is in _Dopesheet_ mode, the middle one in _Clip_ mode and the bottom one in _Graph_ mode.
 
 Below the clip, you see a purple line, called the [_timeline_](https://docs.blender.org/manual/en/latest/editors/clip/main_view.html), and the little blue box, called the _playhead_. The playhead contains the current frame number and you can drag it back and forward to move to any frame.
@@ -622,6 +624,57 @@ However, this produced no noticeable change in the final render.
 
 TODO: find out why?
 
+Rendering the animation
+-----------------------
+
+The Blender [documentation](https://docs.blender.org/manual/en/latest/render/output/animation.html#frame-sequence-workflow) (see the "Frame Sequencer Workflow" section) and this Blender StackExchange [answer](https://blender.stackexchange.com/a/15145/124535) cover things well.
+
+You can render straight out as a video but the consensus seems to be that rendering out frames as individual images is better (you can pause the process and recover from crashes without having to restart the whole process).
+
+Just go to the _Output_ properties and assuming _Resolution_, _Frame Rate_ and _Frame Range_ are already set appropriately, then just set the _Output_ directory:
+
+![img.png](images/render-output.png)
+
+Then go to the _Render_ menu and select _Render Animation_ (`ctrl-F12` rather than the normal `F12` for just rendering a single image).
+
+This took about 18 minutes on my computer for the 210 frames of my clip.
+
+Add the _Video Editing_ workspace, if it isn't already present, and switch to it.
+
+**Important:** for whatever reason, the playhead in this workspace is placed at whatever frame number you'd paused your movie clip previously, e.g. frame 148. If you don't wind it back to frame 1 (just press the _Jump to Endpoint_ button) then the frames, you add, will end starting frame here rather than where you'd expect.
+
+So assuming you've wound back to frame 1, go to the _Add_ menu, select _Image/Sequence_, go to the directory with all your image files, press `A` to select them all (the `ctrl-A`, usual to other programs, won't work) and press _Add Image Strip_ (you can ignore all the properties, like _Start Frame_, _End Frame_ etc. even if they look odd, e.g. _End Frame_ defaults to 26).
+
+Then in the _Output_ properties, just select _FFmpeg Video_ (rather than _PNG_) as the _File Format_ and select _Render Animation_ as before. This time it'll quickly render out the image sequence (it won't rerender the underlying images) as something like `001-210.mkv` in the directory specified in the output field.
+
+If you want to change the container format (Matroska by default) or video codec and its settings (H.264 with medium quality) then just expand the _Encoding_ section. I found changing to _High Quality_ and _Slowest_ encoding speed still encoded reasonably quicker but produced files about 70% larger.
+
+TODO
+----
+
+Map image onto shadow catcher - see Default Cube's video at the 20m 56s mark - https://www.youtube.com/watch?v=7ubTPpIiw3M
+
+He says Ian Hubert would say project-from-view - but he does something fairly complicated (you need to wind back a few seconds to where he does UV unmapping which I think is also part of the process he describes). And look at project-from-view - surely there's an easier way to do things.
+
+Then re-enable glossy and see how things look with a shadow in the reflection.
+
+Also look at using that image for bump mapping - not that it'll be noticeable in this set up.
+
+More advanced reflections
+-------------------------
+
+For nice videos on _essentially_ giving your HDRI's a flat ground (rather than being fully spherical) see:
+
+* https://www.youtube.com/watch?v=WbxAmG0r-38 - low view count but interesting and has details not covered elsewhere.
+* https://www.youtube.com/watch?v=RsAUfQlZH_w - Default Cube creating the half-sphere by hand.
+* https://www.youtube.com/watch?v=xMR8_p_bb_E - Blender Daily creating the half-sphere with an addon.
+
+Note: as the first video points out, if there's much that isn't flat, e.g. people or lampposts, within about 10m of the center of the photosphere then you'll notice extreme distortion for these objects.
+
+And of course there's the shader approach, mentioned up above, that doesn't involve shadow catchers at all:
+
+* https://blender.stackexchange.com/a/26686/124535
+
 fSpy camera matching
 --------------------
 
@@ -631,15 +684,13 @@ I already knew about fSpy but it wasn't until Peter France mentioned it in combi
 
 You need to download both fSpy (from [here](https://fspy.io/)) and the related fSpy Blender addon (from [here](https://github.com/stuffmatic/fSpy-Blender)) (and install it in Blender).
 
-Then you need to extract a scene from your video. Surprisingly, I didn't find an easy way to do this in Blender - so instead I scrubbed to the relevant scene in Blender, noted its frame number and then used `ffmpeg` to extract it:
+Then you need to extract a scene from your video. Oddly, this isn't particularly easy in Blender - the best solution, I found, is described [here](https://www.youtube.com/watch?v=M2IVU14T16s&t=510s) (8m 30s in to ASA Art 3d's video "Video motion tracking and FSPY"). Instead, I scrubbed to the relevant scene in Blender, noted its frame number and then used `ffmpeg` to extract it:
 
 ```
 $ ffmpeg -i courtyard.mov -vf 'select=eq(n\,147)' -vframes 1 courtyard-148.png
 ```
 
-Note: I wanted to extract frame 148 as shown in Blender - Blender numbers frames from 1 whereas `ffmpeg` numbers them from 0, hence the 147 when using `ffmpeg` above.
-
-**Update:** [here](https://www.youtube.com/watch?v=M2IVU14T16s&t=510s) (8m 30s in to ASA Art 3d's video "Video motion tracking and FSPY"), you can see how to render out a single frame. However, the process isn't really any easier than using `ffmpeg`.
+**Important**: I wanted to extract frame 148 as shown in Blender - Blender numbers frames from 1 whereas `ffmpeg` numbers them from 0, hence the 147 when using `ffmpeg` above.
 
 Then you start fSpy and drop this image onto it.
 
@@ -653,12 +704,112 @@ As well lining up the axes, you should move the white control point (which you s
 
 fSpy can also solve for focal length but this is unticked by default. It seems to do a good job - where you don't already know this, it would be interesting to see how it's calculations compare with the results that Blender solving produces.
 
-You can save the result as an `.fspy` file and then import this into Blender (_File / Import / fSpy_) - you should untick _Import Background Image_ when importing.
+You can save the result as an `.fspy` file and then import this into Blender (_File / Import / fSpy_) - you need to untick _Import Background Image_ when importing. This will result in additional camera.
 
-This will result in additional camera. If you make this camera the active camera and are scrubbed to the same point in the tracking clip as you used in fSpy then clicking _Set As Background_ will result in the camera ending up located and oriented just as it was in fSpy.
+Now, things get a little complicated. Ideally, you'd be able to select this camera and select _Setup Tracking Scene_ and have it add the camera solver constraint to the camera without moving it and taking into account that the camera is oriented as it should be for e.g. frame 148 rather than frame 1.
 
-TODO: however if you instead press _Setup Tracking Scene_, Blender will just move the camera to some arbitrary location. See if anyone answers my Blender SE question.
+However, _Setup Tracking Scene_ always moves the camera to some arbitrary location. And clicking _Set As Background_ just sets the background without adding the camera solver constraint, i.e. the motion. You can select the camera and go to the _Object Constraints_ properties and select _Camera Solver_ from the _Add Object Constraint_ dropdown. However, again there's no way to tell Blender that the camera is currently oriented as it should be for a frame other than frame 1.
 
-**Update:** After watching this [video](https://www.youtube.com/watch?v=M2IVU14T16s&t=624s) (11m 44s in), I deleted my original question and asked a more specific one [here](https://blender.stackexchange.com/questions/244396/add-camera-solver-constraint-to-fspy-camera-set-up-for-a-frame-other-than-1). If you use frame 1 with fSpy all seems good but sometimes frame 1 isn't ideal. Note: the next bit (about focal length and sensor size) still applies.
+I asked two questions related to this ([here](https://blender.stackexchange.com/q/244396/124535) and [here](https://blender.stackexchange.com/q/244430/124535)) on the Blender StackExchange but didn't get any answers.
 
-**IMPORTANT:** the fSpy camera won't have the focal length and sensor size settings the default camera gets when you press _Setup Tracking Scene_. Make sure you remember this - but perhaps the whole point is that you should solve for focal length in fSpy (and set the sensor size) there and use this in favor of anything Blender comes up with.
+In the end, the simplest solution _seems_ to be to use the Python API. Having imported the fSpy camera you now have two cameras (the original one and the fSpy one). Select the original camera and then click on _Setup Tracking Scene_. The camera will be moved somewhere arbitrary. Go to the top-orthographic view in the _3D View_ and move and zoom such that you can see both cameras. Then switch the editor to the left of the _3D Viewport_ to be a _Python Console_:
+
+![img.png](images/python-console.png)
+
+Above you can see the original camera (selected) amd the fSpy camera lowever and to its left.
+
+Make sure, you're scrubbed to the frame that you used in fSpy - this will move the original camera to the position that we want to adjust to match that of the imported fSpy camera.
+
+Now, with the original camera selected, enter the following in the Python console:
+
+    >>> camera = C.active_object
+
+Then select the fSpy camera (with the original camera becoming unselected) and enter:
+
+    >>> spy = C.active_object
+
+Then enter the two lines:
+
+    >>> factor = spy.matrix_world @ camera.matrix_world.inverted_safe()
+    >>> camera.matrix_basis = factor @ camera.matrix_basis
+
+The result should be that the original camera ends up in the exact same location as the fSpy camera:
+
+![img.png](images/camera-factored.png)
+
+Now, you can delete the imported fSpy camera - it's done its job, it's location and orientation have been copied to the original camera.
+
+Then switch to the camera view (`NumPad-0`) in the _3D Viewport_ and look at the result:
+
+![img.png](images/fspy-camera-view.png)
+
+To be honest the line-up isn't as good as I expected - see how the sides of the shadow catcher are inside the cobblestone pattern close to the camera but move outwards as it they get further away from the camera.
+
+I suspect this is a result of not using the option to determine focal length in fSpy and then setting that value within Blender (and then not selecting any option to allow Blender to refine this).
+
+### Addon
+
+The Python used here is wrapped up into a super-simple addon [here](https://github.com/george-hawkins/addon-world-to-basis) that lets you select both cameras and then copy the location and orientation from one to the other with a button press.
+
+Stabilization
+------------
+
+There are many videos on stabilizing video clips in Blender. However, for a fully automatic solution you can use `ffmpeg`. First, let's set up the `input` file and take a look at it with `ffplay`:
+
+    $ input=DSC_0016.MOV
+
+    $ ffplay $input
+
+`ffplay` supports various shortcut keys, e.g. `ESC` to exit, `SPACE` to pause, `s` to step forward frame-by-frame, left and right cursor to seek backward/forward 10 seconds.
+
+**Note:** many of my videos are less than 10 seconds so seeking 10 seconds forward or back is pointless. But for longer videos there may be issues due to the lack of keyframes, you can fix this with `-g 25` - this sets a keyframe every 25 frames (the default is every 250 frames). Going below 25 isn't recommended and may not even be supported by certain codecs. Where you place this argument is important, place it before inputs and `ffmpeg` will complain:
+
+    Codec AVOption g (set the group of picture (GOP) size) specified for input file #0 (foobar.mov) is not a decoding option.
+
+Playing a clip with `ffplay` reminds you to turn off _Filmic_ in Blender - you see how different it looks from how it looks when first imported into Blender.
+
+There's not a lot of how-to documentation for vid.stab - the author's documentation can be found [here](http://public.hronopik.de/vid.stab/features.php). And the `ffmpeg` documentation for its bundling of vid.stab as two filters can be found in the [`vidstabdetect`](https://ffmpeg.org/ffmpeg-filters.html#vidstabdetect) and [`vidstabtransform`](https://ffmpeg.org/ffmpeg-filters.html#vidstabtransform) sections of the [filter documentation](https://ffmpeg.org/ffmpeg-filters.html).
+
+The following just uses the suggested settings shown in the example usages in the `ffmpeg` documentation.
+
+First generate the transforms file:
+
+    $ ffmpeg -i $input -vf vidstabdetect -f null -
+    $ ls
+    ... transforms.trf
+
+Then the transformed video:
+
+    $ ffmpeg -i $input -vf vidstabtransform,unsharp=5:5:0.8:3:3:0.4 stable_$input
+    $ ffplay stable_$input
+
+To compare the original and the stabilized side-by-side:
+
+    $ ffmpeg -i $input -i stable_$input -filter_complex hstack compare_$input
+    $ ffplay compare_$input
+
+Note: you can use `vstack` instead of `hstack` to stack the videos vertically rather than placing them side-by-side.
+
+To ramp up stabilization, first tell `vidstabdetect` that the video is particularly shaky:
+
+    $ ffmpeg -i $input -vf vidstabdetect=shakiness=10 -f null -
+
+The default values for `shakiness` is 5 and the maximum is 10.
+
+And then increase the number of frames before and after the current frame that `vidstabtransform` takes into account when smoothing movement:
+
+    $ ffmpeg -i $input -vf vidstabtransform=smoothing=40,unsharp=5:5:0.8:3:3:0.4 stable_$input
+
+The default value for `smoothing` is 10 and you can set it as high as you like.
+
+Note: someone walking briskly is taking about 100 steps per minute, so say you were walking very slowly as about 40 steps per minute, that'd be a step every 1.5 seconds. If shooting video at ~24fps, that'd be a step every 36 frames so maybe a value around 40 would be good. That'd mean analyzing 81 frames per frame (the current frame plus 40 before and 40 after).
+
+By default, an optimal zoom is calculated (to remove the black areas you'd see when one frame is rotated relative to the previous) - you can zoom in a little further (which for fisheye style lens will reduce the extreme wobble that's most obvious at the edges of the frame). E.g. here we zoom in an additional 5%:
+
+    $ ffmpeg -i $input -vf vidstabtransform=smoothing=40:zoom=5,unsharp=5:5:0.8:3:3:0.4 stable_$input
+
+The above examples all default to using H.264 encoding for the output video. You can increase the quality of the encoding (with minimal file size increase) like so:
+
+    $ ffmpeg -i $input -vf vidstabtransform=smoothing=40,unsharp=5:5:0.8:3:3:0.4 -c:v libx264 -preset slow -crf 22 stable_$input
+
+Using `-preset slow -crf 22` is suggested [here](https://trac.ffmpeg.org/wiki/Encode/H.264) in the `ffmpeg` documentation.
