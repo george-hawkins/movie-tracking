@@ -5,7 +5,15 @@ I started with CG Geek's ["Yes.. VFX is THIS Easy (Blender Tutorial)"](https://w
 
 Videos that I found useful:
 
-* Ian Hubert's ["Blender Motion Tracking - Room Transformation!"](https://www.youtube.com/watch?v=lY8Ol2n4o4A).
+* Blender Daily's
+  * ["Add Cars to your Videos with Blender!"](https://www.youtube.com/watch?v=88S6gBFLkdo)
+  * ["Camera Tracking with Blender for Beginners!"](https://www.youtube.com/watch?v=O67P0uzbQBk)
+  * ["Add 3d Objects to Photos with Blender!"](https://www.youtube.com/watch?v=Cf8Ma5hy9hU)
+* CGMatter/Default Cube's
+  * ["Motion tracking #1: Everything you need to know."](https://www.youtube.com/watch?v=WLSGG7sDEac)
+  * ["Put 3D Objects in Any Photo"](https://www.youtube.com/watch?v=aknsCszvMdA)
+* Ian Hubert's ["Blender Motion Tracking - Room Transformation!"](https://www.youtube.com/watch?v=lY8Ol2n4o4A)
+* ASA Art 3d's ["Video motion tracking and FSPY."](https://www.youtube.com/watch?v=M2IVU14T16s)
 
 Shooting footage
 ----------------
@@ -17,6 +25,8 @@ I set out to shoot some footage with my old [Nikon D3100](https://en.wikipedia.o
 ### Rolling shutter
 
 I tended to pan about in my shots and this makes an effect called [rolling shutter](https://en.wikipedia.org/wiki/Rolling_shutter) very clear. There's no end of advice on the web on how to avoid this, e.g. mounting the camera at 90&deg; to the direction of pan (which has the obvious downside that you get portrait footage when you would otherwise have landscape). In the end, the best advice seemed to be to choose a shutter speed that's at least double your frame rate (as Adobe advice [here](https://www.adobe.com/creativecloud/video/discover/rolling-shutter-effect.html) in the section "Master your shutter speed") and to pan about as slowly as you can (or go for a [shaky-cam](https://en.wikipedia.org/wiki/Shaky_camera) look where effects like rolling shutter are lost in all the other movement).
+
+**Update:** in the end, I don't think the effect I was seeing was the result of rolling shutter but instead of the lens's vibration reduction being confused by the smooth pan. It seems that for certain movements, e.g. a smooth pan, the vibration reduction actually introduces a popping effect - it tries to compensate for the movement but as you pan beyond a certain distance it gives up but then immediately starts trying again before it again gives up and so on. Some lenses can detect panning or have a special panning mode but for my lens, I think the proper solution is to disable vibration reduction.
 
 ### Eyepiece cap
 
@@ -125,6 +135,21 @@ I'd be curious to see how the footage from my now quite old Nikon, which has a l
 
 Interestingly, Nigel Barros, [here](https://www.youtube.com/watch?v=__q0yrbbaUo&t=104s) (1m 44s into his video "Smooth Video Without A Gimbal"), gives very different advise to Peter McKinnon - he only goes for two points on contact and a very loose light hold (gliding along, smoothing out rather than transferring motion from the rest of the body) and he goes for a heel-toe walk (rather than on the balls of his feet). The results shown are very smooth.
 
+**Update:** it turns out everyone has their own take on how to do things, some hold the camera tight to their body or tensioned against their neck with a camera strap while others hold the camera loosely and away from their body. So I guess it's up to you to work out what works for you. Other videos I liked were:
+
+* [The Gimbal Walk](https://www.youtube.com/watch?v=E5rK7K7AU1c) - Xiaoyu Yang shows you how to walk like a ninja.
+* [Smooth Gimbal Shots | Ninja Walk like a PRO!](https://www.youtube.com/watch?v=Suydi7lZSOs) - Richard teaches his partner how to ninja walk.
+* [Take light steps](https://www.youtube.com/watch?v=LdrWf7mq9Qg&t=473s) - 7m 53s into his video "SHOOT BETTER HANDHELD", Mark Bone discusses taking light steps and holding the camera _away_ from his body.
+
+After watching a lot of these videos, my impression is that it _may_ be possible to do without a gimbal if one if shooting at 60fps but playing back at 24fps (slowing down the motion also slows out your wobbles making it feel smoother) or if e.g. staying stationary and just swivelling your torso to create a pan. But if you're walking around and want real-time rather than dreamy slo-mo then I suspect you'll have to use a gimbal.
+
+Gimbal
+------
+
+Currently (early 2022), the cheapest well regarded gimbal suitable for a DSLR seems to be the [Zhiyun Weebill-S](https://www.zhiyun-tech.com/en/product/detail/70).
+
+Xiaoyu Yang (in her video linked to above) also suggests something like this [spring dual-handle grip](https://www.aliexpress.com/item/32908621796.html) (also [here](https://www.bhphotovideo.com/c/product/1434067-REG/digitalfoto_solution_limited_ares_alloy_spring_dual_handle.html)) to compensate for up-down motion (e.g. while walking - even with the ninja walk). Note that from reviews, it seems that you will have to adjust the springs to match the weight of your setup - otherwise it will actually introduce more movement rather than reduce it.
+
 What is tracking?
 -----------------
 
@@ -186,6 +211,10 @@ Note: I used the lossless [FFV1](https://en.wikipedia.org/wiki/FFV1) codec for m
 
 Note: you have to press _Prefetch_ each time you reopen the file, it doesn't remember that you want prefetching for a particular `.blend` file. Always move the _playhead_ to frame 1 before fetching - for whatever reason it fetches backward and forward from the current frame and it's painfully slow when it has to fetch backwards.
 
+**Update:** using proxies rather than _Prefetch_ seems a better option especially if you're working with more than 2 or 3 hundred frames.
+
+**Update 2:** using proxies affects _Detect Features_, i.e. it seems to work off the proxy rather than the underlying data. So maybe proxies are of limited value for tracking. If you switch _Proxy Size_ to _None, full render_, click _Detect Features_ and then switch back to a 25% proxy, the tracking _seems_ to work on the underlying data, i.e. you get a good track, but this certainly makes things less convenient.
+
 The _Output_ properties only come into play much later when you're ready to generate a new clip (containing the 3D objects etc. that you've added after finishing with tracking). But you might as well set the _Resolution_ and _Frame Rate_ now to match your input clip. I'm assuming that it isn't mandatory that they match - e.g. you might choose to produce a 1080p output clip despite having a 4K clip or you might choose to decrease the frame rate from the 50 FPS you got from an action cam to the 24 FPS typically used for TV or movies.
 
 **Update:** it isn't true that _Output_ properties only come into play later - try setting the _Frame Rate_ to twice the actual frame rate and press the play button (or just press space when the mouse is in the mouse is over the movie clip). So make sure the _Output_ properties match the details in the _Footage_ tab (it seems odd there isn't a button to automatically copy over these details).
@@ -199,6 +228,109 @@ Note: this affects all setups, not just movie clips. If you're e.g. working on t
 ![img.png](images/color-management.png)
 
 Note: if you later switch to _Cycles_, this setting will still remain set to _Standard_ (as you would want).
+
+Movie files vs image sequences
+------------------------------
+
+Many tutorials say you should convert your file to an image sequence and work with that rather than the raw video file.
+
+I've found that for small video files (where you can prefetch every frame), sticking with video works fine. If you're tracking backwards and it seems to be going extremely slowly then you probably do need to switch to an image sequence.
+
+Try this - start Blender, choose _VFX_ and open your video file, click _Set Scene Frames_, then _Prefetch_ and then play it all the way through. Once that's done, pause it and jump to the last frame and play it backwards. If the backwards playing is incredibly slow then its because all the frames couldn't fit into the video sequencer cache and you should definitely use an image sequence instead.
+
+For a sample video file, try the file `Footage.mp4` found [here](https://drive.google.com/drive/folders/1WHNNXcz74CZb4kF51ZqYNloraMeQHtJd) (it's the footage that accompanies Blender Daily's "Add Cars to your Videos with Blender!" [tutorial](https://www.youtube.com/watch?v=88S6gBFLkdo)). On my machine it plays back very slowly if my video sequence cache is the default 4GiB (and crashes in 3.0.0 due a bug that's been fixed for later releases) but plays back fine if I increase the cache size to 16GiB.
+
+It turns out that playing a video backwards is far more complicated than one might imagine - lookup how keyframes and the reconstruction of individual frames work. Perhaps it's possible by constructing indexes into the underlying byte sequence but it's not something supported by popular video applications like [VLC](https://www.videolan.org/vlc/) (if you Google for VLC and backward playback, you'll see that the general sentiment is that it's too complicated for such a niche feature and if you really want this you should encode a backward version of your video). Quicktime does support backward playback (jump to the end of the video and press command and right-arrow) but it works terribly for videos such as the `Footage.mp4` one linked to above.
+
+You might ask "can't I re-encode my videos to contain more keyframes?" Well you could but if you're going to re-encode your video and preserve the image quality then you'll have to use something like [FFV1](https://en.wikipedia.org/wiki/FFV1) which is not much different to a sequence of PNGs wrapped up into video file. So why bother - just work with the raw image sequence.
+
+So if you decide to use image sequences, you can load your video into Blender and then export it out as a video sequence. But it's simpler just to use `ffmpeg` to convert your video file to an image sequence:
+
+```
+$ mkdir frames
+$ ffmpeg -i my-video.mp4 frames/frame-%04d.png
+$ ls -x frames
+frame-0001.png  frame-0002.png  frame-0003.png  frame-0004.png ...
+```
+
+Proxies
+-------
+
+**TLDR;** proxies introduce their own issues and if you're dealing with a few hundred frames of 1080p video of a hundred frames of 4K, they're probably not worth using. But they do use up significantly less video sequencer cache and they can be far quicker for scrubbing around and playback particularly for 4K video. However, tracking still needs to work with the underlying high-quality data, so while proxies may help with playback, you will still need to increase the video sequencer cache size for tracking on larger files.
+
+Prefetching has its limitations:
+
+* You have to remember to do it every time you open the `.blend` file.
+* It consumes large amounts of memory, e.g. loading an 81MiB 1080p H.264 video caused Blender to jump from a [RSS](https://en.wikipedia.org/wiki/Resident_set_size) of around 331MiB to 4348MiB, i.e. it expanded to about 4GiB in memory.
+* There seem to be limits to how much Blender can prefetch - on my system, Blender simply stops prefetching for aforementioned file after about 500 frames (517 oddly), so that 4GiB isn't even for the full video.
+* Blender often crashes when working with large video files - this may be a Linux / Blender 3.0 issue as many people seem to be working with large video files in Blender. However, I found that playback with large video files predictably crashed (e.g. on going over a particular frame number).
+
+**Update:** the crashes I saw seem to be the result of a bug that surfaced in 3.0.0 and will be resolved in 3.0.1 (the fix is already available in the 3.1-alpha) - see bug report [T94615](https://developer.blender.org/T94615).
+
+All these problems are addressed with proxies - at the cost of image quality when working with the files (but not in the final rendered result).
+
+So, in the right-hand _Footage_ tab, tick and expand the _Proxy/Timecode_ section, leave the main settings as they are (i.e. 25% selected for _Build Original_, 50 for _Quality_) and set _Timecode_ to _Record Run_ and _Proxy Size_ to 25%. Then press _Build Proxy / Timecode_.
+
+For a given clip you can build proxies at different resolutions, you can select the resolutions you want with _Build Original_ (before pressing the _Build_ button) and then use the _Proxy Size_ field below to say which of these resolutions you want to use currently in playback. If you select _None, full render_ for _Proxy Size_ then you see the original highest quality image (but obviously, if you then scrub around or play the video, you have all the problems of unproxied video).
+
+By default, _Timecode_ is set to _None_. Often, this is unproblematic but there may be problems when seeking about in unprocessed video straight from a camera. Setting it to _Record Run_ tells Blender to construct its own timecode data. Note: the other _Timecode_ values, i.e. _Free Run_ etc., are for more unusual cases (like damaged video data).
+
+![img.png](images/proxy.png)
+
+For more documentation, see [here](https://docs.blender.org/manual/en/3.0/editors/clip/sidebar.html).
+
+Note: as well as _Build Original_, there's _Build Undistorted_ - it becomes relevant _if_ you correct for lens distortion. See the section on "proxies and distortion" below and see the [documentation](https://docs.blender.org/manual/en/3.0/render/cameras.html#background-images) for more information.
+
+Aside: the proxy data is written in the same directory as your original video file, it's stored in a subdirectory called `BL_proxy`:
+
+```
+$ ls BL_proxy/my-video.mkv
+free_run.blen_tc  interp_free_run.blen_tc  proxy_25.avi  record_run.blen_tc  record_run_no_gaps.blen_tc
+```
+
+Interesting to see that `_tc` files are produced for every timecode option , i.e. _Record Run_, _Free Run_ etc. So, I guess, like _Proxy Size_, the _Timecode_ setting is about selecting what you want used for current playback etc. (and doesn't affect the proxy data that's created).
+
+### Experimenting with proxy resolutions and quality
+
+**TLDR;** set quality to 95 and the resolution low.
+
+I thought that in situations where Blender had crashed when e.g. playing back beyond 517 frames (as mentioned above), I might be able to use a 100% resolution proxy with _Quality_ set to the very low sounding _50_ value.
+
+In practice, this made no difference - Blender still crashed around the same point. Further experimenting showed that the _Quality_ value makes near to no difference to the amount of memory consumed (so you might as well set it to 95) and what makes the real difference is the resolution.
+
+In all experimenting, the real problem seemed to always be when Blender hit somewhere around the 4GiB mark for its RSS.
+
+As you'd expect, the memory usage goes up dramatically as the resolution increases. E.g. for a given clip, a 25% proxy took up ~400MiB during playing back, while the 50% version took up ~1700MiB and the 75% version took up ~3800MiB (and the 100% version caused Blender to crash).
+
+### Proxies and tracking
+
+While proxies help dramatically with video playback, it turns out they're of limited value with tracking. Tracking needs to work with full non-proxied image - so even if you're using proxies in the _Movie Clip_ editor and in the background shown in your camera, you'll still end up reading in the underlying clip data when tracking. And this consumes very large amounts of data.
+
+Blender has a video sequencer cache and I've found that the default 4GiB cache, typically fills up after tracking about 130 frames of 4K video or around 520 frames of 1080o video (or when playing back this amount of video unproxied). For 3.0.0, Blender then crashes once the cache is full (see bug mentioned above) and for 2.93.7 and 3.1-alpha it doesn't crash but becomes extremely slow.
+
+I'm not sure why it becomes so slow (is ejecting older frames from the cache extremely expensive). The only way around this (that I've found), if you want to track thru a longer video in one go, is to increase the size of the video sequencer cache (assuming you have enough free system memory to support this). E.g. increase it from the default 4096 to 16384.
+
+
+![img.png](images/video-sequencer-cache.png)
+
+### Distortion and proxies
+
+If you enter values for lens distortion or you let the camera motion solver refine for distortion values then, if you're using proxies, you'll find that when you click _Setup Tracking Scene_, the background for the camera will show-up as purple, i.e. missing.
+
+This is because the proxy settings are carried over from the _Movie Clip_ editor, e.g. to use a 25% proxy, but the camera wants to display the undistorted video, i.e. the result of correcting for the lens distortion values, and up until now we only have the one or more proxies generated from the original video.
+
+To resolve this, go to the camera _Object Data_ properties and expand the _Background Images_ section. Do **not** untick _Render Undistorted_ (which is what I did initially), instead either:
+
+* Switch the _Proxy Render Size_ to _None_ (in which case undistortion will be done on the fly without the use of any proxies).
+* Go to the _Footage_ tab (left-hand side of the main _Movie Clip_ editor) and in addition to selecting 25% (or whatever) under _Build Original_, select the same value under _Build Undistorted_ and then click _Build Proxy_.
+
+![img.png](images/undistorted-proxies.png)
+
+Note: if you look at the _Render Undistorted_ setting for the camera before pressing _Setup Tracking Scene_ it will show as unticked, it's pressing _Setup Tracking Scene_, when you've got _Len Distortion_ values set in the right-hand _Track_ tab (in the _Camera_ / _Lens_ section), that causes _Render Undistorted_ to be automatically ticked at part of this process.
+
+### Proxies and detecting features
+
+When you do tracking, the tracking works on the underlying full-quality video data even if you're using proxies. However, oddly, _Detect Features_ works on the currently selected low-quality proxy image if you're using proxies. So before doing _Detect Features_, switch the _Proxy Size_ (in the _Footage_ tab) to _None_, click _Detect Features_ and then switch back to the proxy. That's it - everything else works as you'd want.
 
 Tracking settings
 -----------------
@@ -223,6 +355,8 @@ By default, Blender chooses two arbitrary keyframes (1 and 30). And, unless you'
 So even if not using a preset, switch to _Previous Frame_ unless you have a good understanding of keyframes.
 
 The documentation covers _Keyframe_ and _Previous Frame_ [here](https://docs.blender.org/manual/en/latest/movie_clip/tracking/clip/toolbar/track.html#tracking-settings).
+
+Note: as far as I can tell, you should always tick _Normalize_ (just below _Prepass_) and the only reason it's not ticked by default is some slight performance penalty.
 
 Motion model
 ------------
@@ -353,7 +487,7 @@ I tried various things to improve the solve. I selected my camera (a Nikon D3100
 
 However, in the end I got the best result by _not_ using the _Camera_ preset or setting the _Focal Length_ or by setting _Keyframe A_ and _B_ but by instead asking Blender to work out everything itself. I.e. I ticked the _Keyframe_ checkbox and in the _Refine_ section, I ticked the _Focal Length_, _Optical Center_ and _Radial Distortion_ checkboxes:
 
-**Update:** setting the _Sensor Width_ to the correct value greatly reduces the solve error and setting _Focal Length_ does also seem like a good idea (though not dramatic). Refine really does refine, i.e. it works from the existing values and improves them (rather than producing the same values irrespective of the existing ones).
+**Update:** setting the _Sensor Width_ to the correct value greatly reduces the solve error and setting _Focal Length_ does also seem like a good idea (though not as dramatic). Refine really does refine (see [here](https://docs.blender.org/manual/en/3.0/movie_clip/tracking/clip/toolbar/solve.html)), i.e. it works from the existing values and improves them (rather than producing the same values irrespective of the existing ones).
 
 After a bit more experimenting, I found:
 
@@ -362,6 +496,8 @@ After a bit more experimenting, I found:
 * Ticking _Keyframes_, i.e. letting Blender choose them, didn't affect the error, i.e. it stayed at 2.19px.
 * Ticking _Optical Center_ improved things dramatically to 1.61px.
 * Ticking _Radial Distortion_ improved things even more dramatically to 0.48px.
+
+Note: it seems Blender won't refine values, such as focal length, unless the overall error is lower than a certain threshold. If your solve error is terrible, you'll see that Blender makes no adjustment to focal length.
 
 Then I tried experimenting with _Focal Length_, first with refine _Focal Length_ unticked and then with it ticked:
 
@@ -442,8 +578,42 @@ TODO: so I'm inclined to use _Clean Up_ rather than the _Dopesheet_ for removing
 
 TODO: is there anything to be gained by cleaning up gradually, i.e. setting the _Error_ for _Clean Up_ to 3 removing all problem markers and re-solving, adjust _Error_ down to 2 and so on? I.e. is the error of each marker calculated relative to some aspect of the current solve result and therefore changes as the solve changes, so if you throw away the currently worst points the average error of the remaining markers will change after the next solve and you will select a different set of worst points than if you'd simply selected more points based on their error before the re-solve.
 
-Tracking Scene
---------------
+Manual tracking
+---------------
+
+Blender Daily, describes working with manually placed trackers in this [video](https://www.youtube.com/watch?v=O67P0uzbQBk).
+
+You only need eight trackers in view at any particular point so, placing the trackers yourself may not be that bad.
+
+Use `alt-LMB` to place a tracker. Choose areas of high contrast, e.g. a leaf on concrete, and, if the default tracker size is too small to cover e.g. both the leaf and a bit of the surrounding area then scale it up.
+
+Use, `alt-S` to toggle displaying the search area around a tracker. When a tracker gets lost, try increasing the size of the search area and, if necessary, the tracker itself. It seems, you can often also make the search area too large and it starts finding erroneous matches.
+
+If a tracker gets lost and you see that it drifted off its target before getting lost entirely then scrub back to the last frame where it was on target and press the left or right _Clear Track Path_ button (the buttons with the little "x").
+
+![img.png](images/clear_track_path.png)
+
+When you scrub around, the blue part of the track corresponds to frames ahead of the current position and the red part to those behind.
+
+So if you're tracking forward and a tracker has drifted off, then select it, scrub back to where it was still on target and press the right _Clear Track Path_ button to clear the blue part of the path where it drifted off.
+
+If you were tracking backwards then use the left button to clear the red part of the path.
+
+Note: Blender Daily starts with _Motion Model_ set to _Location, Rotation & Scale_ (and leaves _Match_ set to _Keyframe_) and tracks his points individually, i.e. he only tracks one tracker at a time rather than a whole mass of them. This means he can adjust the _Motion Model_ used for tracking as he moves on from one tracker to the next - e.g. for his last tracker, he switches to _Affine_ as it involves perspective changes (why he uses _Affine_ rather than _Perspective_, I don't know).
+
+For keyframes, Blender Daily uses the first and last frame and says this is what he typically does. And he lets Blender work refine the focal length (as he doesn't know if for his iPhone camera - though he does know and use the sensor size).
+
+He says, he only reduces the key frame count if you get the error "At least 8 common tracks on both keyframes are needed for reconstruction", in which case he reduces the range until this condition is met.
+
+Moving on a plane
+-----------------
+
+A really cool feature that came up in the Blender Daily video was moving on a plane - I already knew that you could use `x`, `y` and `z` to constrain movement to a particular axis.
+
+But you can also eliminate an axis, e.g. eliminate the z-axis so that you move only on the xy-plane by pressing `shift-Z` after pressing `g`.
+
+Setup Tracking Scene
+--------------------
 
 Now, the solve is all done, press _Setup Tracking Scene_:
 
@@ -536,7 +706,22 @@ The only odd thing was how to change the scale, if you just try `S` nothing _see
 
 ![img.png](images/transform-pivot-point.png)
 
-Any finally use `R` and `Z` to rotate things around the z-axis so that things are lined up perfectly.
+And finally use `R` and `Z` to rotate things around the z-axis so that things are lined up perfectly.
+
+After scaling, the camera can end up looking huge relative to everything else:
+
+![img.png](images/huge-camera.png)
+
+To fix this, just select the camera, go to its _Object Data_ properties, expand the _Viewport Display_ section and reduce the size value, e.g. to 0.2m as here:
+
+![img.png](images/small-camera.png)
+
+Hiding motion tracking data
+---------------------------
+
+If you're using the _3D Viewport_ and want to hide the points corresponding to the motion tracking markers and the path corresponding to the motion of the camera (if the camera wasn't stationary), you can do this via the _Viewport Overlays_. Just untick _Camera Path_ or _Motion Tracking_:
+
+![img.png](images/tracking_viewport_overlays.png)
 
 HDR
 ---
@@ -578,6 +763,18 @@ If you just want a single crisp frame without motion blur, just turn it off in t
 
 Note: it's also noticeable that while you usually see shadows, when _Rendered_ viewport shading is selected, when one normal object casts a shadow on another, you do not see the shadows on the shadow catcher until you produce a high-quality render. It just appears as a slightly lighter area when viewed in the _3D Viewport_ (through the _Camera_ perspective):
 
+**Update:** the lack of shadow isn't actually a mistake/issue - it's a result of the view being split into two layers (_Foreground_ and _Background_) when you press _Setup Tracking Scene_. You can switch the current layer via the dropdown in the main menu bar.
+
+_Background layer with shadow._  
+![img.png](images/background_with_shadow.png)
+
+_Foreground layer with sphere._
+![img.png](images/foreground_with_sphere.png)
+
+It's only with compositing that you see the two layers combined.
+
+Note: the collections created by _Setup Tracking Scene_ are also called _foreground_ and _background_. However, there's no automatic relationship between these collections and the vew layers - how a collection behaves for a particular layer has to be configured (and _Setup Tracking Scene_ handles this in this case).
+
 ![img.png](images/shadow-catcher.png)
 
 _Presumably_, this is a similar optimization to not showing motion blur except in final renders.
@@ -616,13 +813,45 @@ I haven't yet tried out the shader approach.
 Denoising
 ---------
 
-I've found that denoising (as described [here](https://github.com/george-hawkins/photosphere/blob/master/in-blender.md)) greatly improves the final rendered image. So I tried enabling it for this setup like so (with _Denoising Data_ ticked under _View Layer_ properties):
+Denoising seems to have been simplified in Blender 3.0.
 
-![img.png](images/denoising.png)
+In you go to the _Compositing_ workspace and look at one of the _Render Layers_ nodes, by default, you'll see:
 
-However, this produced no noticeable change in the final render.
+![img.png](images/basic-render-layers.png)
 
-TODO: find out why?
+If you now go to _Output_ properties, expand _Sampling_, then _Render_ and then tick _Denoise_ then you'll now get an additional _Noisy Image_ output on your compositing node:
+
+![img.png](images/noisy-image-output.png)
+
+If you then go to _View Layer_ properties, expand _Passes_ and _Data_ and tick _Denoising Data_ then you get even more outputs:
+
+![img.png](images/all-denoising-outputs.png)
+
+Previous to 3.0, you used to wire _Noisy Image_, _Denoising Normal_ and _Denoising Albedo_ through to a _Denoise_ node and use its _Image_ output in place of the original image.
+
+Now, in 3.0, in seems you no longer need to turn on _Denoising Data_ nor use a _Denoise_ node - if you've turned on _Denoise_ for _Render_ under _Output_ properties then that's enough - the _Image_ output of your _Render Layers_ node is now denoised. You can ignore the _Noisy Image_ output, it's now only useful if for some reason you want access to the undenoised image.
+
+Andrew goes into all the 3.0 denoiser settings in more details [here](https://youtu.be/_WRUW_fs1g8?t=1380) (23m into part 6 of his 3.0 Donut tutorial). There's also some more discussion around this in the video comments.
+
+Note: the denoiser itself introduces a noticeable cost, in my scene (where there's just a sphere and nothing else beside the shadow catcher), it actually took less time to render 512 samples (128 is the default) than to reduce it to 32 and add denoising. But I suspect this is extremely scene dependent.
+
+Compositing
+-----------
+
+_Setup Tracking Scene_ creates a default arrangement of nodes in the _Compositing_ workspace:
+
+![img.png](images/compositing-nodes.png)
+
+If you want to be able to dial the darkness of your shadows up and down, Blender Daily describes how you can replace the first _Alpha Over_ node with a set of nodes that allows this [here](https://www.youtube.com/watch?v=O67P0uzbQBk&t=1500s) (29m in to his "Camera Tracking with Blender for Beginners" tutorial).
+
+Layer thumbnails stop appearing in compositor
+---------------------------------------------
+
+Above, you can see a thumbnail of the shadow and the sphere in the nodes corresponding to their containing layers. I got into a situation where these thumbnails stopped appearing (and all my renders _seemed_ to happen instantaneously).
+
+The solution was to go to _Output Properties_, expand _Post Processing_ and untick _Sequencer_.
+
+I _suspect_ this was somehow automatically enabled as part of the actions in the next section (rendering the animation).
 
 Rendering the animation
 -----------------------
@@ -751,6 +980,78 @@ I suspect this is a result of not using the option to determine focal length in 
 
 The Python used here is wrapped up into a super-simple addon [here](https://github.com/george-hawkins/addon-world-to-basis) that lets you select both cameras and then copy the location and orientation from one to the other with a button press.
 
+Speed-run render
+----------------
+
+Once, you've pressed _Setup Tracking Scene_, it's important to know that some of the scene's properties only properly work if the renderer is set to Cycles. E.g. if you select the "Ground" and go to its _Object_ properties, the _Shadow Catcher_ setting is only available for Cycles.
+
+Also note that the scene looks more different than you might expect depending on viewport shading in the _3D Viewport_.
+
+_Solid shading._  
+![img.png](images/car-park-solid.png)
+
+_Material shading._  
+![img.png](images/car-park-material.png)
+
+_Rendered shading._  
+![img.png](images/car-park-render.png)
+
+Go to _Render_ properties, expand the _Film_ section and tick _Transparent_ to see the background.
+
+![img.png](images/car-park-render-transparent.png)
+
+Remove the "Light". Go to _World_ properties, in the _Surface_ section, click the _Color_ dot,  select _Environment Texture_ and open the relevant HDRI.
+
+Go to the _Shading_ workspace and in the _Shader_ editor, switch from _Object_ to _World_ and add an _Input / Texture Coordinate_ node and a _Vector / Mapping_ node and wire the _Generated_ of the first to the _Vector_ input of the second and then its _Vector_ output to the _Vector_ input of the _Environment Texture_ node.
+
+Still in _Shading_, switch to the camera view and toggle _Transparent_ on and off and adjust the _Rotation_ z-value of the _Mapping_ node until the HDRI and the movie clip background line up as best as possible.
+
+Add a material to the "Cube" and e.g. set its _Metallic_ value to max and its _Roughness_ value to 0.2.
+
+**Note:** in Blender 3.0.0, you have to select "Ground", go to its _Object_ properties, expand the _Visibility_ section and tick _Shadow Catcher_. This used to be set up automatically, I've logged a bug about this [here](https://developer.blender.org/T94751).
+
+Also in the _Visibility_ section for "Ground", under _Ray Visibility_ turn off _Glossy_. Finally, you'll get a render like this:
+
+![render](images/render-car-park.jpg)
+
+There actually are shadows here but they're extremely weak. As it turns out the HDRI isn't really informing the lighting as it should (it's reconstructed from a JPEG using AI and in this case it produces a scene with no clear sun).
+
+### Darkening the shadows
+
+Blender sets up the composting nodes as shown here:
+
+![img.png](images/composite-before.png)
+
+Blender Daily explains [here](https://youtu.be/O67P0uzbQBk?t=1502) (at the 25m mark in his video "Camera Tracking with Blender for Beginners!") how you can make the shadows more pronounced.
+
+Remove the first _Alpha Over_ node. Replace it with a _Color / Mix_ node, change _Mix_ to _Multiply_. Take the _Alpha_ output (rather than the _Image_ output) of the shadow's _Render Layers_ node and plug it into the the second _Image_ input of our _Multiply_ node. Things look a little odd, so add in a _Converter / ColorRamp_ node and place it such that it's wired between the _Render Layers_ and _Mutliply_ node. Click it's little drop-down arrow and select _Flip Color Ramp_. Adjust the right-hand edge of the ramp so there's more pure black. Then to dial things in even more add in a _Color / RGB Curves_ node such that it's wired between the _ColorRamp_ and the _Multiply_ node and pull the curve down and to the right. And you end up with something like this:
+
+![img.png](images/composite-after.png)
+
+For my setup, this doesn't help much - it turns out there's a fundamental problem with the lighting (the HDRI isn't really a HDRI) and you end up with a weird large shadow extending out in all directions around the cube:
+
+![img](images/render-car-park-dark-shadow.png)
+
+3.0 render side note
+--------------------
+
+The default number of samples has changed dramatically between Blender 2.93 and 3.0.
+
+_Blender 2.93.7 defaults_  
+![img.png](images/blender-2.93-samples.png)
+
+_Blender 3.0.0 defaults_  
+![img.png](images/blender-3.0.0-samples.png)
+
+So we seem to have jumped from 128 and 32 to 1024 and 4096 for render and viewport. However, the _Noise Threshold_ setting means that in practice this sample counts are never hit - once the noise level falls below a threshold, no more samples are rendered. In 2.93.x, _Adaptive Sampling_ was the equivalent of _Noise Threshold_ but it wasn't on by default.
+
+4K monitor
+----------
+
+When I switched to a 4K monitor my viewport renders became extremely slow (when viewport shading was set to _Rendered_ and when using Cycles) due to the big increase in resolution. You can decrease the number of samples for the viewport or alternatively reduce the viewport resolution (when using Cycles) by doubling (or more) the pixel size:
+
+![img.png](images/pixel-size.png)
+
 Stabilization
 ------------
 
@@ -813,3 +1114,17 @@ The above examples all default to using H.264 encoding for the output video. You
     $ ffmpeg -i $input -vf vidstabtransform=smoothing=40,unsharp=5:5:0.8:3:3:0.4 -c:v libx264 -preset slow -crf 22 stable_$input
 
 Using `-preset slow -crf 22` is suggested [here](https://trac.ffmpeg.org/wiki/Encode/H.264) in the `ffmpeg` documentation.
+
+### Stablization distortion
+
+In the end, I found stabilization to have clear limits - the best regarded stabilizer seems to be Adobe's [Warp Stabilizer](https://www.adobe.com/creativecloud/video/discover/stabilize-video.html) and warp is the keyword here. All stabilizers are going to introduce strange effects. Think about it, if you're walking towards say a car and looking at it straight on in one frame and then jerk a little to the left as one foot goes down then you'll see a little more of the left-side of the car than in the previous frame, if you then jerk a little to the right as the other foot goes down then you'll see a little more of the right side. So, for simplicity, let's think of three frames - one looking at the front of the car straight on, one where you see a little more of the left-side and one of the right side. If you then stabilize these such that e.g. the car's headlights line up perfectly over the three of frames, you'll get a weird effect where you're no longer seeing the jerky movement to left and right that explains to your brain why you're seeing a little bit more of the left of the car in one frame and a little bit more of the right in another - without the jerkiness, your brain is expecting a continuous straight on view of the car but the stablization is just shifting things about, it can't adjust the direction the camera was looking for a particular frame, e.g. it can't adjust a frame where you were seeing a little more of the right-side of the car such that it just shows the car straight on.
+
+Tom Streller describes this issue [here](https://www.youtube.com/watch?v=T1VkGkzXVaM&t=109s) (6m 39s into his video "How To STABILIZE YOUR CAMERA Without GIMBAL, FLYCAM, etc."). As he puts it, if you haven't already tried your damnedest to make sure the source video is already as stable as possible, then "your footage will look totally strange, it will look like your environment is, I don't know, bent by some dark force"
+
+Here's a box, in the first frame we've wobbled a little to the left and see the blue left side, in the next frame we're looking at the box straight on and in the final one we've wobbled a little to right and see the green right side. If we stablize these three frames such that the front of the box stays in the same position through-out, there's nothing the stabilization software can do about the fact that we still see different parts of the box in each frame - it's just moving 2D images around, it can't correct things such that we're always looking at the box straight on.
+
+| Left        | Straight-on | Right | Stabilized |
+|-------------|-------------|-------|------------|
+|![](images/stabilized/left.png) | ![](images/stabilized/center.png)| ![](images/stabilized/right.png)|![](images/stabilized/warped-frames.png) |
+
+The _Stabilized_ image above is the three stabilized frames, i.e. adjusted so the box front stays in the same position, laid on-top of each other. In a video, they'd come one after and another and your brain would ask what's going on with the weird left-right motion in the parts of the image furthest away from the camera.
